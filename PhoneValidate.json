@@ -1,0 +1,58 @@
+{
+	"info": {
+		"_postman_id": "e070df37-b8b6-426f-98ee-9dbd9414412d",
+		"name": "PhoneValidation",
+		"schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.0.0\/collection.json"
+	},
+	"item": [{
+		"name": "PhoneValidator1",
+		"event": [{
+			"listen": "test",
+			"script": {
+				"type": "text\/javascript",
+				"exec": ["pm.test(\"Status code is 200\", function () {\r",
+				"    pm.response.to.have.status(200);\r",
+				"});"]
+			}
+		}],
+		"id": "699d3805-b4ba-483f-8835-b95b95ec9710",
+		"request": {
+			"method": "GET",
+			"header": [{
+				"key": "client_id",
+				"value": "dabb16cc46084cb9864937aca3912b43",
+				"type": "text"
+			},
+			{
+				"key": "client_secret",
+				"value": "772D385dF09A456B882f841153bdcD07",
+				"type": "text"
+			}],
+			"url": {
+				"raw": "http:\/\/apilayer.net\/api\/validate?access_key=64133bbcb1447055b3b8a792b93ae042&number=232324212&country_code=US&format=1",
+				"protocol": "http",
+				"host": ["apilayer",
+				"net"],
+				"path": ["api",
+				"validate"],
+				"query": [{
+					"key": "access_key",
+					"value": "64133bbcb1447055b3b8a792b93ae042"
+				},
+				{
+					"key": "number",
+					"value": "232324212"
+				},
+				{
+					"key": "country_code",
+					"value": "US"
+				},
+				{
+					"key": "format",
+					"value": "1"
+				}]
+			}
+		},
+		"response": []
+	}]
+}
