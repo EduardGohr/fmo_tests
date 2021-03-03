@@ -1,0 +1,186 @@
+{
+	"info": {
+		"_postman_id": "c1ef19b9-68a0-4904-955e-658f8a3701fe",
+		"name": "Day2Operations",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log('response body:\\n' + pm.response.json());\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Id is available\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.be.a(\"string\");\r",
+							"    pm.collectionVariables.set(\"bearerToken\", jsonData.id);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"tenant\": \"{{tenant}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{apiendpoint}}/identity/api/tokens",
+					"host": [
+						"{{apiendpoint}}"
+					],
+					"path": [
+						"identity",
+						"api",
+						"tokens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateRemoteConnection",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set(\"orderId\", \"RemoteConnection_{{$guid}}\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log('response body:\\n' + pm.response.json());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\": \"com.vmware.vcac.catalog.domain.request.CatalogItemProvisioningRequest\",\r\n    \"data\": {\r\n        \"actionId\": \"SaltRequestStatesAction\",\r\n        \"callbackUrl\": \"https://int4daimler.service-now.com\",\r\n        \"orderId\": \"{{orderId}}\",\r\n        \"daimler.saltEnvironment\": \"fdc\",\r\n        \"daimler.saltStatesRun\": \"s_mq.cmdb.openOrder|r-mq|{{cmdbHostname}},s_mq.mq.manageMqObjectsPcfNew|r-mq|{{hostnameA}},s_mq.mq.manageMqObjectsPcfNew|r-mq|{{hostnameB}},s_mq.cmdb.closeOrder|r-mq|{{cmdbHostname}}\",\r\n        \"daimler.saltAttribute.r-mq.INPUT.orderType\": \"'CreateRemoteConnection'\",\r\n        \"daimler.saltAttribute.r-mq.INPUT.extKey\": \"'{{orderId}}'\",\r\n        \"daimler.saltAttribute.r-mq.INPUT.parameters.qmgrNameA\": \"'{{qmgrNameA}}'\",\r\n        \"daimler.saltAttribute.r-mq.INPUT.parameters.qmgrNameB\": \"'{{qmgrNameB}}'\",\r\n        \"daimler.saltAttribute.r-mq.INPUT.parameters.minionServerA\": \"'{{hostnameA}}'\",\r\n        \"daimler.saltAttribute.r-mq.INPUT.parameters.minionServerB\": \"'{{hostnameB}}'\",\r\n        \"daimler.saltAttribute.r-mq.INPUT.isSucceeded\": \"'True'\",\r\n        \"daimler.saltStatesError\": \"s_mq.cmdb.closeOrder|e-mq|{{cmdbHostname}}\",\r\n        \"daimler.saltAttribute.e-mq.INPUT.extKey\": \"'{{orderId}}'\",\r\n        \"daimler.saltAttribute.e-mq.INPUT.isSucceeded\": \"'False'\",\r\n        \"xaas\": {\r\n            \"data\": {}\r\n        }\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{apiendpoint}}/catalog-service/api/consumer/entitledCatalogItems/c54bd476-739f-4ecc-aa4e-05e9f87ff473/requests",
+					"host": [
+						"{{apiendpoint}}"
+					],
+					"path": [
+						"catalog-service",
+						"api",
+						"consumer",
+						"entitledCatalogItems",
+						"c54bd476-739f-4ecc-aa4e-05e9f87ff473",
+						"requests"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "username",
+			"value": "api1@vsphere.local"
+		},
+		{
+			"key": "password",
+			"value": "!SuessWasser48"
+		},
+		{
+			"key": "bearerToken",
+			"value": "MTYxNDA4NDc2MTU1NjpmYWViZDJkOTJhNzljZWRjMWQ2MTp0ZW5hbnQ6dnJhNGdsdXNlcm5hbWU6YXBpMUB2c3BoZXJlLmxvY2FsZXhwaXJhdGlvbjoxNjE0MTEzNTYxMDAwOjQ4NDg4NzlmMWUwYzgwZWM0YzZiMjExZjc5Yjc1NGNjOWIyYTU1MGVlMWFmMzhjZjZiNjRhYWI5MzlhYjgxZTc2YmU1M2Y5ZjFmOWNmYzllZjllODZjZDIzY2YwYTAzYTYzMGMyY2Y4MDc5OGExMDU3N2RjMTc4YjU0M2ZmMTY3"
+		},
+		{
+			"key": "apiendpoint",
+			"value": "https://sgdemvvra02.con-02.emea.dc.corpintra.net"
+		},
+		{
+			"key": "hostnameA",
+			"value": "sgdcm0004725.con-02.emea.dc.corpintra.net"
+		},
+		{
+			"key": "hostnameB",
+			"value": "sgdcm0004726.con-02.emea.dc.corpintra.net"
+		},
+		{
+			"key": "cmdbHostname",
+			"value": "sgdem0002237.con-02.emea.dc.corpintra.net"
+		},
+		{
+			"key": "qmgrNameA",
+			"value": "F000001S"
+		},
+		{
+			"key": "qmgrNameB",
+			"value": "F000001T"
+		},
+		{
+			"key": "tenant",
+			"value": "vra4gl"
+		}
+	]
+}

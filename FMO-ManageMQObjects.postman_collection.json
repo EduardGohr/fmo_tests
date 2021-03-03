@@ -1,0 +1,188 @@
+{
+	"info": {
+		"_postman_id": "6fc11bae-fb3e-4e91-969b-baddcbf9d743",
+		"name": "FMO-MQ-Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log('response body:\\n' + pm.response.json());\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Id is available\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.be.a(\"string\");\r",
+							"    pm.collectionVariables.set(\"bearerToken\", jsonData.id);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"tenant\": \"{{tenant}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{apiendpoint}}/identity/api/tokens",
+					"host": [
+						"{{apiendpoint}}"
+					],
+					"path": [
+						"identity",
+						"api",
+						"tokens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateLocalQueue",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set(\"orderId\", \"CreateLQueue_{{$guid}}\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log('response body:\\n' + pm.response.json());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\": \"com.vmware.vcac.catalog.domain.request.CatalogItemProvisioningRequest\",\r\n    \"data\": {\r\n        \"actionId\": \"SaltRequestStatesAction\",\r\n        \"callbackUrl\": \"https://int4daimler.service-now.com\",\r\n        \"orderId\": \"{{orderId}}\",\r\n        \"daimler.saltEnvironment\": \"fdc\",\r\n        \"daimler.saltStatesRun\": \"s_mq.cmdb.openOrder|b-mq|{{cmdbHostname}},s_mq.mq.manageMqObjectsPcfNew|b-mq|{{mqHostname}},s_mq.cmdb.closeOrder|b-mq|{{cmdbHostname}}\",\r\n        \"daimler.saltAttribute.b-mq.INPUT.orderType\": \"'GenericObjects'\",\r\n        \"daimler.saltAttribute.b-mq.INPUT.extKey\": \"'{{orderId}}'\",\r\n        \"daimler.saltAttribute.b-mq.INPUT.isSucceeded\": \"'True'\",\r\n        \"daimler.saltAttribute.b-mq.INPUT.parameters.minion\": \"'{{mqHostname}}'\",\r\n        \"daimler.saltAttribute.b-mq.INPUT.parameters.qmgr\": \"'{{qmgrName}}'\",\r\n        \"daimler.saltAttribute.b-mq.INPUT.parameters.testFlag\": \"'False'\",\r\n        \"daimler.saltAttribute.b-mq.INPUT.parameters.objects\": \"'[{\\\"objectType\\\": \\\"QUEUE\\\",\\\"objectArgs\\\": {\\\"MQCA_Q_NAME\\\": \\\"{{queueName}}\\\",\\\"MQIA_Q_TYPE\\\": \\\"1\\\",\\\"MQIA_MAX_Q_DEPTH\\\": \\\"4000\\\",\\\"MQIA_MAX_MSG_LENGTH\\\": \\\"104857600\\\"}}, {\\\"objectType\\\": \\\"AUTHREC\\\", \\\"objectArgs\\\": {\\\"MQCACF_AUTH_PROFILE_NAME\\\": \\\"{{queueName}}\\\", \\\"MQIACF_OBJECT_TYPE\\\": \\\"1\\\",\\\"MQIACF_ENTITY_TYPE\\\": \\\"2\\\",\\\"MQCACF_ENTITY_NAME\\\": \\\"mqapps\\\",\\\"MQIACF_AUTHORIZATION_LIST\\\": [\\\"11\\\", \\\"10\\\", \\\"8\\\", \\\"2\\\", \\\"9\\\"]}}]'\",\r\n        \"daimler.saltStatesError\": \"\",\r\n        \"xaas\": {\r\n            \"data\": {}\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiendpoint}}/catalog-service/api/consumer/entitledCatalogItems/c54bd476-739f-4ecc-aa4e-05e9f87ff473/requests",
+					"host": [
+						"{{apiendpoint}}"
+					],
+					"path": [
+						"catalog-service",
+						"api",
+						"consumer",
+						"entitledCatalogItems",
+						"c54bd476-739f-4ecc-aa4e-05e9f87ff473",
+						"requests"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "bearerToken",
+			"value": "MTYxNDA5MDc1OTQ5NDplYzVkZjg1NjJlNDMyMTcyMzIxYTp0ZW5hbnQ6dnJhNGdsdXNlcm5hbWU6YXBpMUB2c3BoZXJlLmxvY2FsZXhwaXJhdGlvbjoxNjE0MTE5NTU5MDAwOmZjOWQ1MjVmNzgzZTdiYjQ5M2YxNzZkN2M4MGM0YTVhOGYyNTE3MTYzMWM3NWZmN2FmMWY2Y2MzODI1OWViNjcwNDcwZWVlMThiN2JkZjYzNDI5MDQ2OGU3NTg1NWIwNjFhNTY2OTJjYjlkOWJiMjY2OGQ1MTFiYzNhYmNmOTBj"
+		},
+		{
+			"key": "cmdbHostname",
+			"value": "sgdem0002237.con-02.emea.dc.corpintra.net"
+		},
+		{
+			"key": "mqHostname",
+			"value": "sgdcm0005115.con-02.emea.dc.corpintra.net"
+		},
+		{
+			"key": "qmgrName",
+			"value": "F000002Z"
+		},
+		{
+			"key": "queueName",
+			"value": "TEST1.QL"
+		},
+		{
+			"key": "apiendpoint",
+			"value": "https://sgdemvvra02.con-02.emea.dc.corpintra.net"
+		},
+		{
+			"key": "username",
+			"value": "api1@vsphere.local"
+		},
+		{
+			"key": "password",
+			"value": "!SuessWasser48"
+		},
+		{
+			"key": "tenant",
+			"value": "vra4gl"
+		}
+	]
+}
